@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Procurement System</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css"
+      rel="stylesheet"
+    />
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="dashboard.html">
+          <i class="bi bi-box-seam"></i> Procurement System
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="dashboard.html">
+                <i class="bi bi-speedometer2"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="items.html">
+                <i class="bi bi-box"></i> Items
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="suppliers.html">
+                <i class="bi bi-building"></i> Suppliers
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="purchase.html">
+                <i class="bi bi-cart-plus"></i> New Purchase
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="history.html">
+                <i class="bi bi-clock-history"></i> History
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                data-bs-toggle="dropdown"
+              >
+                <i class="bi bi-person-circle"></i>
+                <span id="username">User</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" href="#" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+      <h2 class="mb-4"><i class="bi bi-speedometer2"></i> Dashboard</h2>
+
+      <!-- Stats Cards -->
+      <div class="row mb-4">
+        <div class="col-md-3">
+          <div class="card bg-primary text-white">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-title mb-0">Total Items</h6>
+                  <h2 class="mb-0" id="totalItems">-</h2>
+                </div>
+                <i class="bi bi-box fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-success text-white">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-title mb-0">Total Suppliers</h6>
+                  <h2 class="mb-0" id="totalSuppliers">-</h2>
+                </div>
+                <i class="bi bi-building fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-info text-white">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-title mb-0">Total Purchases</h6>
+                  <h2 class="mb-0" id="totalPurchases">-</h2>
+                </div>
+                <i class="bi bi-cart-check fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="card bg-warning text-dark">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="card-title mb-0">Low Stock Items</h6>
+                  <h2 class="mb-0" id="lowStockItems">-</h2>
+                </div>
+                <i class="bi bi-exclamation-triangle fs-1 opacity-50"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inventory Overview -->
+      <div class="card">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h5 class="mb-0">
+            <i class="bi bi-box-seam"></i> Inventory Overview
+          </h5>
+          <a href="items.html" class="btn btn-sm btn-primary">View All</a>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Item Name</th>
+                  <th>Stock</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="itemsTableBody">
+                <tr>
+                  <td colspan="5" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+      $(document).ready(function () {
+        // Check authentication
+        if (!requireAuth()) return;
+
+        // Set username
+        const user = getUser();
+        if (user) {
+          $("#username").text(user.username);
+        }
+
+        // Configure toastr
+        toastr.options = {
+          closeButton: true,
+          progressBar: true,
+          positionClass: "toast-top-right",
+          timeOut: 3000,
+        };
+
+        // Load dashboard data
+        loadDashboardData();
+      });
+
+      function loadDashboardData() {
+        // Load items
+        api
+          .get("/items")
+          .done(function (response) {
+            if (response.success) {
+              const items = response.data || [];
+              $("#totalItems").text(items.length);
+
+              // Count low stock items (stock < 10)
+              const lowStock = items.filter((item) => item.stock < 10).length;
+              $("#lowStockItems").text(lowStock);
+
+              // Render items table
+              renderItemsTable(items);
+            }
+          })
+          .fail(function () {
+            toastr.error("Failed to load items");
+          });
+
+        // Load suppliers
+        api
+          .get("/suppliers")
+          .done(function (response) {
+            if (response.success) {
+              $("#totalSuppliers").text((response.data || []).length);
+            }
+          })
+          .fail(function () {
+            toastr.error("Failed to load suppliers");
+          });
+
+        // Load purchases
+        api
+          .get("/purchases")
+          .done(function (response) {
+            if (response.success) {
+              $("#totalPurchases").text((response.data || []).length);
+            }
+          })
+          .fail(function () {
+            toastr.error("Failed to load purchases");
+          });
+      }
+
+      function renderItemsTable(items) {
+        const $tbody = $("#itemsTableBody");
+        $tbody.empty();
+
+        if (items.length === 0) {
+          $tbody.html(
+            '<tr><td colspan="5" class="text-center text-muted">No items found</td></tr>'
+          );
+          return;
+        }
+
+        // Show first 10 items
+        items.slice(0, 10).forEach(function (item) {
+          let statusBadge = "";
+          if (item.stock === 0) {
+            statusBadge = '<span class="badge bg-danger">Out of Stock</span>';
+          } else if (item.stock < 10) {
+            statusBadge = '<span class="badge bg-warning">Low Stock</span>';
+          } else {
+            statusBadge = '<span class="badge bg-success">In Stock</span>';
+          }
+
+          const row = `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${escapeHtml(item.name)}</td>
+                        <td>${item.stock}</td>
+                        <td>${formatCurrency(item.price)}</td>
+                        <td>${statusBadge}</td>
+                    </tr>
+                `;
+          $tbody.append(row);
+        });
+      }
+
+      // Escape HTML to prevent XSS
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    </script>
+  </body>
+</html>

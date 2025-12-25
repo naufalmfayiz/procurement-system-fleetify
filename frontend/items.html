@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Items - Procurement System</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.css"
+      rel="stylesheet"
+    />
+    <link href="css/style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container">
+        <a class="navbar-brand" href="dashboard.html">
+          <i class="bi bi-box-seam"></i> Procurement System
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="dashboard.html">
+                <i class="bi bi-speedometer2"></i> Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="items.html">
+                <i class="bi bi-box"></i> Items
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="suppliers.html">
+                <i class="bi bi-building"></i> Suppliers
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="purchase.html">
+                <i class="bi bi-cart-plus"></i> New Purchase
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="history.html">
+                <i class="bi bi-clock-history"></i> History
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                data-bs-toggle="dropdown"
+              >
+                <i class="bi bi-person-circle"></i>
+                <span id="username">User</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                  <a class="dropdown-item" href="#" onclick="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mt-4">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-box"></i> Items Management</h2>
+        <button
+          class="btn btn-primary"
+          data-bs-toggle="modal"
+          data-bs-target="#itemModal"
+          onclick="openAddModal()"
+        >
+          <i class="bi bi-plus-lg"></i> Add Item
+        </button>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Stock</th>
+                  <th>Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="itemsTableBody">
+                <tr>
+                  <td colspan="5" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                      <span class="visually-hidden">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Item Modal -->
+    <div class="modal fade" id="itemModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalTitle">Add Item</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <form id="itemForm">
+            <div class="modal-body">
+              <input type="hidden" id="itemId" />
+              <div class="mb-3">
+                <label for="itemName" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="itemName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="itemStock" class="form-label">Stock</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="itemStock"
+                  min="0"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="itemPrice" class="form-label">Price (Rp)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="itemPrice"
+                  min="0"
+                  step="0.01"
+                  required
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancel
+              </button>
+              <button type="submit" class="btn btn-primary" id="saveBtn">
+                Save
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Confirm Delete</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Are you sure you want to delete
+              <strong id="deleteItemName"></strong>?
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastr@2.1.4/build/toastr.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+      let itemModal, deleteModal;
+      let deleteItemId = null;
+
+      $(document).ready(function () {
+        if (!requireAuth()) return;
+
+        const user = getUser();
+        if (user) $("#username").text(user.username);
+
+        toastr.options = {
+          closeButton: true,
+          progressBar: true,
+          positionClass: "toast-top-right",
+          timeOut: 3000,
+        };
+
+        // Initialize modals
+        itemModal = new bootstrap.Modal(document.getElementById("itemModal"));
+        deleteModal = new bootstrap.Modal(
+          document.getElementById("deleteModal")
+        );
+
+        loadItems();
+
+        // Form submission
+        $("#itemForm").on("submit", function (e) {
+          e.preventDefault();
+          saveItem();
+        });
+
+        // Delete confirmation - Event Delegation for dynamically created buttons
+        $(document).on("click", ".btn-delete", function () {
+          const id = $(this).data("id");
+          const name = $(this).data("name");
+          openDeleteModal(id, name);
+        });
+
+        // Edit button - Event Delegation
+        $(document).on("click", ".btn-edit", function () {
+          const id = $(this).data("id");
+          openEditModal(id);
+        });
+
+        $("#confirmDeleteBtn").on("click", function () {
+          deleteItem();
+        });
+      });
+
+      function loadItems() {
+        api
+          .get("/items")
+          .done(function (response) {
+            if (response.success) {
+              renderItemsTable(response.data || []);
+            }
+          })
+          .fail(function () {
+            toastr.error("Failed to load items");
+          });
+      }
+
+      function renderItemsTable(items) {
+        const $tbody = $("#itemsTableBody");
+        $tbody.empty();
+
+        if (items.length === 0) {
+          $tbody.html(
+            '<tr><td colspan="5" class="text-center text-muted">No items found</td></tr>'
+          );
+          return;
+        }
+
+        items.forEach(function (item) {
+          const row = `
+                    <tr>
+                        <td>${item.id}</td>
+                        <td>${escapeHtml(item.name)}</td>
+                        <td>${item.stock}</td>
+                        <td>${formatCurrency(item.price)}</td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-primary btn-edit" data-id="${
+                              item.id
+                            }">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${
+                              item.id
+                            }" data-name="${escapeHtml(item.name)}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+          $tbody.append(row);
+        });
+      }
+
+      function openAddModal() {
+        $("#modalTitle").text("Add Item");
+        $("#itemId").val("");
+        $("#itemForm")[0].reset();
+      }
+
+      function openEditModal(id) {
+        api
+          .get("/items/" + id)
+          .done(function (response) {
+            if (response.success) {
+              const item = response.data;
+              $("#modalTitle").text("Edit Item");
+              $("#itemId").val(item.id);
+              $("#itemName").val(item.name);
+              $("#itemStock").val(item.stock);
+              $("#itemPrice").val(item.price);
+              itemModal.show();
+            }
+          })
+          .fail(function () {
+            toastr.error("Failed to load item data");
+          });
+      }
+
+      function saveItem() {
+        const id = $("#itemId").val();
+        const data = {
+          name: $("#itemName").val().trim(),
+          stock: parseInt($("#itemStock").val()),
+          price: parseFloat($("#itemPrice").val()),
+        };
+
+        const request = id
+          ? api.put("/items/" + id, data)
+          : api.post("/items", data);
+
+        request
+          .done(function (response) {
+            if (response.success) {
+              toastr.success(
+                id ? "Item updated successfully" : "Item created successfully"
+              );
+              itemModal.hide();
+              loadItems();
+            } else {
+              toastr.error(response.message || "Operation failed");
+            }
+          })
+          .fail(function (xhr) {
+            const message = xhr.responseJSON?.message || "Operation failed";
+            toastr.error(message);
+          });
+      }
+
+      function openDeleteModal(id, name) {
+        deleteItemId = id;
+        $("#deleteItemName").text(name);
+        deleteModal.show();
+      }
+
+      function deleteItem() {
+        if (!deleteItemId) return;
+
+        api
+          .delete("/items/" + deleteItemId)
+          .done(function (response) {
+            if (response.success) {
+              toastr.success("Item deleted successfully");
+              deleteModal.hide();
+              loadItems();
+            } else {
+              toastr.error(response.message || "Delete failed");
+            }
+          })
+          .fail(function (xhr) {
+            const message = xhr.responseJSON?.message || "Delete failed";
+            toastr.error(message);
+          });
+      }
+
+      function escapeHtml(text) {
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+    </script>
+  </body>
+</html>
